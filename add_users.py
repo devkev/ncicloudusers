@@ -7,7 +7,7 @@ tenant_name = os.environ.get('OS_TENANT_NAME')
 auth_url = os.environ.get('OS_AUTH_URL')
 password = os.environ.get('OS_PASSWORD')
 
-new_tenant = 'NAME OF PROJECT'
+new_tenant = 'access.dev'
 
 def getsalt(chars = string.letters + string.digits,length=16):
     salt = ''
@@ -37,20 +37,23 @@ with open('userlist', 'r') as users:
 users = dict()
 
 for line in ul:
-    users[line[-1]] = list()
-    users[line[-1]].append(line[2])
-    users[line[-1]].append(base64.encodestring(sha.new(randpasswd()).digest()))
+    users[line[-1][:-1]] = list()
+    users[line[-1][:-1]].append(line[2])
+    users[line[-1][:-1]].append(str(base64.encodestring(sha.new(randpasswd()).digest())).replace('=','-')[:-1])
+
 
 keystone = client.Client(username=username, password=password, tenant_name=tenant_name, auth_url=auth_url)
-tenant = keystone.tenants.create(tenant_name=new_tenant)
+tenant = keystone.tenants.create(tenant_name=new_tenant, enabled=True)
 
 for user in users:
-    keystone.users.create(name=user, password=users[user][1], tenant_id=tenant.id, email=users[user][0], enabled=True)
-    with open('creds/' + str(user) + 'rc', 'w') as credfile:
-        credfile.write('OS_USERNAME=' + user + '\n')
-        credfile.write('OS_TENANT_NAME=' + new_tenant + '\n')
-        credfile.write('OS_AUTH_URL=' + auth_url + '\n')
-        credfile.write('OS_REGION_NAME=' + 'RegionOne' + '\n')
-        credfile.write('OS_PASSWORD=' + users[user][1] + '\n')
+    print user
+    print users[user]
+    keystone.users.create(name=user, password=users[user][1], email=users[user][0], tenant_id=str(tenant.id), enabled=True)
+    with open('creds/' + user + 'rc', 'w') as credfile:
+        credfile.write('export OS_USERNAME=' + user + '\n')
+        credfile.write('export OS_TENANT_NAME=' + new_tenant + '\n')
+        credfile.write('export OS_AUTH_URL=' + auth_url + '\n')
+        credfile.write('export OS_REGION_NAME=' + 'RegionOne' + '\n')
+        credfile.write('export OS_PASSWORD=' + users[user][1] + '\n')
 
 
