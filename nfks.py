@@ -74,6 +74,7 @@ def add_project(project):
     if len(t) == 0:
         print "making project " + project + " with description '" + title + "'"
         keystone.tenants.create(project, description=title, enabled=True)
+        tenants = keystone.tenants.list()
 
     tenant = [t for t in tenants if t.name==project][0]
     existingusers = [k.name for k in keystone.users.list()]
