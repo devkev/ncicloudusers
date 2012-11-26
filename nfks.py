@@ -108,7 +108,7 @@ def test():
     print title[0].title
 
 # write user credentials to a file for them to source
-def create_cred_file(user, password, tenant, keystone):
+def create_cred_file(user, password, tenant):
     with open(tenant + '/' + user + 'rc', 'w') as credfile:
         credfile.write('export OS_USERNAME=' + user + '\n')
         credfile.write('export OS_TENANT_NAME=' + tenant + '\n')
