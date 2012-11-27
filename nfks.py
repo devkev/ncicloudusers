@@ -117,7 +117,7 @@ def create_cred_file(user, password, tenant):
         credfile.write('export OS_TENANT_NAME=' + tenant + '\n')
         credfile.write('export OS_AUTH_URL=' + auth_url + '\n')
         credfile.write('export OS_REGION_NAME=' + 'RegionOne' + '\n')
-        credfile.write('export OS_PASSWORD=' + users[user][1] + '\n')
+        credfile.write('export OS_PASSWORD=' + password + '\n')
         credfile.write('export OS_NO_CACHE=1'+ '\n')
 
 
