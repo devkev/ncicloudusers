@@ -77,12 +77,15 @@ def add_project(project):
         tenants = keystone.tenants.list()
 
     tenant = [t for t in tenants if t.name==project][0]
-    existingusers = [k.name for k in keystone.users.list()]
+    existingusers = [k for k in keystone.users.list()]
+    existingusernames = [k.name for k in existingusers]
 
     for user in users:
-        if user in existingusers:
+        existinguser = [u for u in existingusers if u.name == user]
+        if len(existinguser) == 1:
+            existinguser = existinguser[0]
             print "adding member roles to " + user
-            keystone.roles.add_user_role(user.id, role=memberRole, tenant=tenant.id)
+            keystone.roles.add_user_role(existinguser.id, role=memberRole, tenant=tenant.id)
         else:
             print "adding " + user
             userpw = str(base64.encodestring(sha.new(randpasswd()).digest())).replace('=','-')[:-1]
