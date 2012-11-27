@@ -74,6 +74,7 @@ def add_project(project):
     if len(t) == 0:
         print "making project " + project + " with description '" + title + "'"
         keystone.tenants.create(project, description=title, enabled=True)
+        tenants = keystone.tenants.list()
 
     tenant = [t for t in tenants if t.name==project][0]
     existingusers = [k.name for k in keystone.users.list()]
@@ -107,7 +108,7 @@ def test():
     print title[0].title
 
 # write user credentials to a file for them to source
-def create_cred_file(user, password, tenant, keystone):
+def create_cred_file(user, password, tenant):
     with open(tenant + '/' + user + 'rc', 'w') as credfile:
         credfile.write('export OS_USERNAME=' + user + '\n')
         credfile.write('export OS_TENANT_NAME=' + tenant + '\n')
