@@ -123,12 +123,13 @@ def create_cred_file(user, password, tenant):
 def main():
     p = OptionParser()
 
-    p.add_option('--user', '-u')
-    p.add_option('--tenant', '-t')
+    p.add_option('--user', '-u', help="Must be used with -t. NOT YET IMPLEMENTED.")
+    p.add_option('--tenant', '-t', help="Must be used with -u. NOT YET IMPLEMENTED.")
 
     p.add_option('--project', '-p')
 
-    p.add_option('--debug', '-d')
+    p.add_option('--debug', '-d', action="store_true", default=False)
+
     options, arguments = p.parse_args()
 
     if (options.debug):
@@ -142,6 +143,9 @@ def main():
     if (options.user and options.tenant):
         add_user_to_tenant(options.user, options.tenant)
         return
+
+    p.print_help()
+
 
 if __name__ == '__main__':
     main()
