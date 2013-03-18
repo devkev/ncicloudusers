@@ -111,6 +111,7 @@ def test():
 
 # write user credentials to a file for them to source
 def create_cred_file(user, password, tenant):
+    os.umask(0o077)
     try:
         os.makedirs(tenant + "/" + user)
     except OSError as exc: # Python >2.5
