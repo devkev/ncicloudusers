@@ -124,6 +124,17 @@ def create_cred_file(user, password, tenant):
         credfile.write('export OS_REGION_NAME=' + 'RegionOne' + '\n')
         credfile.write('export OS_PASSWORD=' + password + '\n')
         credfile.write('export OS_NO_CACHE=1'+ '\n')
+    with open(tenant + '/' + user + '/.nci-os-creds-' + user + '.csh', 'w') as credfile:
+        credfile.write('setenv OS_USERNAME ' + user + '\n')
+        credfile.write('if ( ${?PROJECT} ) then\n')
+        credfile.write('\tsetenv OS_TENANT_NAME $PROJECT\n')
+        credfile.write('else\n')
+        credfile.write('\tsetenv OS_TENANT_NAME ' + tenant + '\n')
+        credfile.write('endif\n')
+        credfile.write('setenv OS_AUTH_URL ' + auth_url + '\n')
+        credfile.write('setenv OS_REGION_NAME ' + 'RegionOne' + '\n')
+        credfile.write('setenv OS_PASSWORD ' + password + '\n')
+        credfile.write('setenv OS_NO_CACHE 1'+ '\n')
 
 
 def main():
