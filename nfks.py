@@ -10,7 +10,6 @@ from urllib import quote_plus as urlquote
 
 import os, sha, base64, random, string
 from keystoneclient.v2_0 import client
-from fabric.api import local, env
 
 username = os.environ.get('OS_USERNAME')
 tenant_name = os.environ.get('OS_TENANT_NAME')
