@@ -119,7 +119,7 @@ def create_cred_file(user, password, tenant):
         else: raise
     with open(tenant + '/' + user + '/.nci-os-creds-' + user + '.sh', 'w') as credfile:
         credfile.write('export OS_USERNAME=' + user + '\n')
-        credfile.write('export OS_TENANT_NAME=' + tenant + '\n')
+        credfile.write('export OS_TENANT_NAME=${PROJECT:-' + tenant + '}\n')
         credfile.write('export OS_AUTH_URL=' + auth_url + '\n')
         credfile.write('export OS_REGION_NAME=' + 'RegionOne' + '\n')
         credfile.write('export OS_PASSWORD=' + password + '\n')
