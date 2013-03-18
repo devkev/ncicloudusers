@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from urllib import quote_plus as urlquote
 
-import os, sha, base64, random, string
+import os, sha, base64, random, string, errno, os.path
 from keystoneclient.v2_0 import client
 
 username = os.environ.get('OS_USERNAME')
@@ -115,7 +115,7 @@ def create_cred_file(user, password, tenant):
     try:
         os.makedirs(tenant + "/" + user)
     except OSError as exc: # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
+        if exc.errno == errno.EEXIST and os.path.isdir(tenant + "/" + user):
             pass
         else: raise
     with open(tenant + '/' + user + '/.nci-os-creds-' + user + '.sh', 'w') as credfile:
