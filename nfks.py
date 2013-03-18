@@ -112,12 +112,12 @@ def test():
 # write user credentials to a file for them to source
 def create_cred_file(user, password, tenant):
     try:
-        os.makedirs(tenant)
+        os.makedirs(tenant + "/" + user)
     except OSError as exc: # Python >2.5
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
         else: raise
-    with open(tenant + '/' + user + 'rc', 'w') as credfile:
+    with open(tenant + '/' + user + '/.nci-os-creds-' + user + '.sh', 'w') as credfile:
         credfile.write('export OS_USERNAME=' + user + '\n')
         credfile.write('export OS_TENANT_NAME=' + tenant + '\n')
         credfile.write('export OS_AUTH_URL=' + auth_url + '\n')
