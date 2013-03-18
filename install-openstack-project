@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [ $# = 0 -o "$1" = -h -o "$1" = -help -o "$1" = --help ]; then
+	echo "Usage: install-openstack-project projA projB ..." 1>&2
+	echo "The project codes to install must be specified." 1>&2
+	echo "'nfks -p proj' will first be run for each one." 1>&2
+	exit 0
+fi
+
+set -e -x
+
+cd /root/ncicloudusers
+umask 0077
+
+shopt -s nullglob
+
+for proj; do
+	nfks -p "$proj"
+	for i in "$proj"/*; do
+		username="${i#$proj/}"
+		pwent="$(getent passwd "$username")"
+		group="$(awk -F: '{print $4}' <<< "$pwent")"
+		homedir="$(awk -F: '{print $6}' <<< "$pwent")"
+		if [ -e "$homedir" -a ! -d "$homedir" ]; then
+			mv "$homedir"{,.wtf}
+		fi
+		if [ ! -e "$homedir" ]; then
+			cp -a /etc/skel "$homedir"
+			chmod 750 "$homedir"
+			chown -R "$username" "$homedir"
+			chgrp -R "$group" "$homedir"
+		fi
+		for sh in sh csh; do
+			[ -e "$homedir/.nci-os-creds-$username.$sh" ] && mv -f "$homedir/.nci-os-creds-$username.$sh"{,.nci.old}
+			cp "$i/.nci-os-creds-$username.$sh" "$homedir"
+			chmod 600 "$homedir/.nci-os-creds-$username.$sh"
+			chown -R "$username" "$homedir/.nci-os-creds-$username.$sh"
+			chgrp -R "$group" "$homedir/.nci-os-creds-$username.$sh"
+		done
+		mkdir -p DONE
+		mv "$i" DONE
+	done
+	if [ -d "$proj" ]; then rmdir --ignore-fail-on-non-empty "$proj"; fi
+done
+
